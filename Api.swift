@@ -20,6 +20,19 @@ struct DishType : Codable {
     let strCategoryDescription: String
 }
 
+struct DishPreviewList : Codable {
+    let meals: [DishPreview]
+}
+
+struct DishPreview : Codable {
+    let strMeal: String
+    let strMealThumb: String
+    let idMeal: String
+}
+
+struct DishDetailsList : Codable {
+
+}
 // Struct to hold details for a specific dish
 struct DishDetails : Codable {
     let idMeal: String
@@ -32,19 +45,57 @@ struct DishDetails : Codable {
 }
 
 class Api {
-    static let API_DISH_TYPE_URL = "https://www.themealdb.com/api/json/v1/1/categories.php"
-
+    static private let API_DISH_TYPE_URL = "https://www.themealdb.com/api/json/v1/1/categories.php"
+    
+    // Partial string will be filled out in function
+    static private let API_DISH_GENRE_PREVIEW_URL = "https://www.themealdb.com/api/json/v1/1/filter.php?c="
+    static private let API_DISH_DETAIL_URL = "https://www.themealdb.com/api/json/v1/1/lookup.php?i="
+        
     static public func getAllDishGenre() async throws -> DishTypeList {
         let url = URL(string: API_DISH_TYPE_URL)
-        guard let unwrappedUrl = url else {
+        guard let url = url else {
             print("Url is not valid")
             return DishTypeList(categories: [])
         }
         
-        let (data, _) = try await URLSession.shared.data(from: unwrappedUrl)
-        print(data)
+        let (data, _) = try await URLSession.shared.data(from: url)
         let dishTypeList = try JSONDecoder().decode(DishTypeList.self, from: data)
-        print(dishTypeList)
         return dishTypeList
+    }
+    
+    static public func getAllDishSummaryForGenre(genre: String) async throws -> DishPreviewList {
+        let url = URL(string: API_DISH_GENRE_PREVIEW_URL + genre)
+        
+        guard let url = url else {
+            print("Url is not valid")
+            return DishPreviewList(meals: [])
+        }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        print(data)
+        let dishPreviewList = try JSONDecoder().decode(DishPreviewList.self, from: data)
+        
+        return dishPreviewList
+        
+    }
+    
+    static public func getDishDetails(dishId: String) async throws -> Void {
+        //return DishDetails()
+        let url = URL(string: API_DISH_DETAIL_URL + dishId)
+        guard let url = url else {
+            print("Url is not valid")
+            return //DishTypeList(categories: [])
+        }
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+        
+        guard let json = json else {
+            print("Could Not Parse JSON into Dict")
+            return
+        }
+        
+        print(json)
+        
     }
 }

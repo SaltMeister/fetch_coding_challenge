@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3207863E2C5ED91D00D491C0 /* DishListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3207863D2C5ED91D00D491C0 /* DishListView.swift */; };
 		3234BA742C5DFD9D00434BD7 /* RecipeBrowserAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3234BA732C5DFD9D00434BD7 /* RecipeBrowserAppApp.swift */; };
 		3234BA762C5DFD9D00434BD7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3234BA752C5DFD9D00434BD7 /* ContentView.swift */; };
 		3234BA782C5DFDA600434BD7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3234BA772C5DFDA600434BD7 /* Assets.xcassets */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3207863D2C5ED91D00D491C0 /* DishListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DishListView.swift; sourceTree = "<group>"; };
 		3234BA702C5DFD9D00434BD7 /* RecipeBrowserApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RecipeBrowserApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3234BA732C5DFD9D00434BD7 /* RecipeBrowserAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeBrowserAppApp.swift; sourceTree = "<group>"; };
 		3234BA752C5DFD9D00434BD7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 				3234BA792C5DFDA600434BD7 /* Preview Content */,
 				3234BA812C5E01CF00434BD7 /* LaunchView.swift */,
 				3234BA832C5E034F00434BD7 /* HomeView.swift */,
+				3207863D2C5ED91D00D491C0 /* DishListView.swift */,
 			);
 			path = RecipeBrowserApp;
 			sourceTree = "<group>";
@@ -146,6 +149,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3207863E2C5ED91D00D491C0 /* DishListView.swift in Sources */,
 				3234BA762C5DFD9D00434BD7 /* ContentView.swift in Sources */,
 				3234BA842C5E034F00434BD7 /* HomeView.swift in Sources */,
 				3234BA822C5E01CF00434BD7 /* LaunchView.swift in Sources */,

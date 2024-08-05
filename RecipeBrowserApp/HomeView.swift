@@ -8,61 +8,52 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State var dishType: [DishType] = []
+    @State var dishTypeList: DishTypeList = DishTypeList(categories: [])
     
     var body: some View {
-        VStack {
-            Spacer()
-            Text("What kind of dish are you looking for?")
-            NavigationStack {
-                Grid {
-                    if dishType.isEmpty {
-                        ProgressView()
-                    }
+        let columns = [GridItem(.flexible()), GridItem(.flexible())]
+        NavigationStack {
+            ScrollView(.vertical) {
+                VStack {
+                    Spacer()
+                    Text("What kind of dish are you looking for?")
 
-                    
-                    // Display 2 items per grid row
-                    ForEach(0 ..< dishType.count/2, id: \.self) {index in
-                        GridRow{
-                            VStack {
-                                let item1Index = index * 2
-                                Text(dishType[item1Index].strCategory)
-                                AsyncImage(url: URL(string: dishType[item1Index].strCategoryThumb)) { result in
-                                    result.image?
-                                        .resizable()
-                                        .scaledToFit()
-                                }
-                                .frame(maxWidth: 200, maxHeight: 2000)
+                        LazyVGrid(columns: columns, spacing: 2) {
+                            if dishTypeList.categories.isEmpty {
+                                ProgressView()
                             }
-                            .padding(5)
-                            .onTapGesture {
-                                
-                            }
+
                             
-                            VStack {
-                                let item2Index = index * 2 + 1
-                                Text(dishType[item2Index].strCategory)
-                                AsyncImage(url: URL(string: dishType[item2Index].strCategoryThumb)) { result in
-                                    result.image?
-                                        .resizable()
-                                        .scaledToFit()
+                            // Display 2 items per grid row
+                            ForEach(dishTypeList.categories, id: \.idCategory) { dishType in
+                                GridRow {
+                                    NavigationLink(destination: DishListView(dishType: .constant(dishType.strCategory))) {
+                                        VStack {
+                                            AsyncImage(
+                                                url: URL(string: dishType.strCategoryThumb),
+                                                transaction: Transaction(animation: .default)
+                                            ) { phase in
+                                                if let image = phase.image { image
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                }
+                                                else { ProgressView() }
+                                            }
+                                            .frame(maxWidth: 200, maxHeight: 200)
+                                        
+                                            Text(dishType.strCategory)
+                                        }
+                                        .padding(5)
+                                    }
                                 }
-                                .frame(maxWidth: 200, maxHeight: 200)
-                            }
-                            .padding(5)
-                            .onTapGesture {
-                                
                             }
                         }
-                        
                     }
-                }
             }
-           
         }
         .onAppear {
             Task{
-                dishType = try await Api.getAllDishGenre().categories
+                dishTypeList = try await Api.getAllDishGenre()
             }
         }
 
