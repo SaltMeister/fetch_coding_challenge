@@ -107,7 +107,7 @@ class Api {
     
     // Combines Ingredients and Measurements for Dish into single array
     static private func parseDishDetailIntoStruct(json : [String: Any]) -> DishDetails {
-        let ingredientString = "strIngredient"
+        let ingrediantString = "strIngredient"
         let measurementString = "strMeasure"
         let maxIngredientsFromJson = 20
         
@@ -120,12 +120,12 @@ class Api {
         
         // Loop Combine ingredients into array of strings
         for index in 1 ... maxIngredientsFromJson {
-            let currentIngred = ingredientString + String(index)
-            let currentMeasure = measurementString + String(index)
+            let currentIngrediantStr = ingrediantString + String(index)
+            let currentMeasureStr = measurementString + String(index)
             
             var ingredientString = ""
 
-            if let ingredients = json[currentIngred] as? String {
+            if let ingredients = json[currentIngrediantStr] as? String {
                 if ingredients.isEmpty || ingredients.allSatisfy({ $0.isWhitespace }) {
                     continue
                 }
@@ -134,7 +134,7 @@ class Api {
                 continue
             }
             
-            if let measurements = json[currentMeasure] as? String {
+            if let measurements = json[currentMeasureStr] as? String {
                 if measurements.isEmpty || measurements.allSatisfy({ $0.isWhitespace }) {
                     continue
                 }
