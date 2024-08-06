@@ -123,27 +123,27 @@ class Api {
             let currentIngred = ingredientString + String(index)
             let currentMeasure = measurementString + String(index)
             
-            var stringToAdd = ""
+            var ingredientString = ""
 
-            if let ingred = json[currentIngred] as? String {
-                if ingred.isEmpty || ingred.allSatisfy({ $0.isWhitespace }) {
+            if let ingredients = json[currentIngred] as? String {
+                if ingredients.isEmpty || ingredients.allSatisfy({ $0.isWhitespace }) {
                     continue
                 }
-                stringToAdd += ingred + ": "
+                ingredientString += ingredients + ": "
             } else {
                 continue
             }
             
-            if let measure = json[currentMeasure] as? String {
-                if measure.isEmpty || measure.allSatisfy({ $0.isWhitespace }) {
+            if let measurements = json[currentMeasure] as? String {
+                if measurements.isEmpty || measurements.allSatisfy({ $0.isWhitespace }) {
                     continue
                 }
-                stringToAdd += measure
+                ingredientString += measurements
             } else {
                 continue
             }
 
-            ingredientsList.append(stringToAdd)
+            ingredientsList.append(ingredientString)
         }
         
         // Casting Any to strings for use in struct
