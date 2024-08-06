@@ -9,10 +9,16 @@ import SwiftUI
 
 @main
 struct RecipeBrowserAppApp: App {
+    @State var isFinishedLaunching = false
+    
     var body: some Scene {
         WindowGroup {
-            HomeView()
-            //ContentView()
-        }
+            if isFinishedLaunching {
+                HomeView()
+            } else {
+                LaunchView(isFinishedLaunch: $isFinishedLaunching)
+            }
+            
+        }   
     }
 }

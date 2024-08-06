@@ -24,24 +24,24 @@ struct DishPreviewList : Codable {
     let meals: [DishPreview]
 }
 
+struct DishMutablePreviewList : Codable {
+    var meals: [DishPreview]
+}
+
 struct DishPreview : Codable {
     let strMeal: String
     let strMealThumb: String
     let idMeal: String
 }
 
-struct DishDetailsList : Codable {
-
-}
 // Struct to hold details for a specific dish
 struct DishDetails : Codable {
-    let idMeal: String
     let strMeal: String
     let strArea: String
     let strInstructions: String
     let strMealThumb: String
     let strYoutube: String
-    let strIngredientSummary: [String : String]
+    let strIngredientSummary: [String]
 }
 
 class Api {
@@ -72,19 +72,22 @@ class Api {
         }
         
         let (data, _) = try await URLSession.shared.data(from: url)
-        print(data)
-        let dishPreviewList = try JSONDecoder().decode(DishPreviewList.self, from: data)
         
-        return dishPreviewList
+        // Grab Dishes and sort them beforre returning immutable struct
+        var dishPreviewList = try JSONDecoder().decode(DishMutablePreviewList.self, from: data)
+        
+        dishPreviewList.meals.sort(by: {$0.strMeal < $1.strMeal})
+        
+        return DishPreviewList(meals: dishPreviewList.meals)
         
     }
     
-    static public func getDishDetails(dishId: String) async throws -> Void {
+    static public func getDishDetails(dishId: String) async throws -> DishDetails? {
         //return DishDetails()
         let url = URL(string: API_DISH_DETAIL_URL + dishId)
         guard let url = url else {
             print("Url is not valid")
-            return //DishTypeList(categories: [])
+            return nil
         }
         
         let (data, _) = try await URLSession.shared.data(from: url)
@@ -92,10 +95,78 @@ class Api {
         
         guard let json = json else {
             print("Could Not Parse JSON into Dict")
-            return
+            return nil
         }
         
-        print(json)
+        if let data = json["meals"] as? [[String: Any]] {
+            let result = parseDishDetailIntoStruct(json: data[0])
+            return result
+        }
+        return nil
+    }
+    
+    // Combines Ingredients and Measurements for Dish into single array
+    static private func parseDishDetailIntoStruct(json : [String: Any]) -> DishDetails {
+        let ingredientString = "strIngredient"
+        let measurementString = "strMeasure"
+        let maxIngredientsFromJson = 20
         
+        var ingredientsList: [String] = []
+        var strInstructions = ""
+        var strMeal = ""
+        var strYoutube = ""
+        var strMealThumb = ""
+        var strArea = ""
+        
+        // Loop Combine ingredients into array of strings
+        for index in 1 ... maxIngredientsFromJson {
+            let currentIngred = ingredientString + String(index)
+            let currentMeasure = measurementString + String(index)
+            
+            var stringToAdd = ""
+
+            if let ingred = json[currentIngred] as? String {
+                if ingred.isEmpty || ingred.allSatisfy({ $0.isWhitespace }) {
+                    continue
+                }
+                stringToAdd += ingred + ": "
+            } else {
+                continue
+            }
+            
+            if let measure = json[currentMeasure] as? String {
+                if measure.isEmpty || measure.allSatisfy({ $0.isWhitespace }) {
+                    continue
+                }
+                stringToAdd += measure
+            } else {
+                continue
+            }
+
+            ingredientsList.append(stringToAdd)
+        }
+        
+        // Casting Any to strings for use in struct
+        if let mealName = json["strMeal"] as? String {
+            strMeal = mealName
+        }
+        if let dishArea = json["strArea"] as? String {
+            strArea = dishArea
+        }
+        // Get Data
+        if let intruction = json["strInstructions"] as? String {
+            strInstructions = intruction
+        }
+        if let youtubeUrl = json["strYoutube"] as? String {
+            strYoutube = youtubeUrl
+        }
+        if let strThumbnail = json["strMealThumb"] as? String {
+            strMealThumb = strThumbnail
+        }
+        
+        return DishDetails(strMeal: strMeal, strArea: strArea,
+                           strInstructions: strInstructions,
+                           strMealThumb: strMealThumb, strYoutube: strYoutube,
+                           strIngredientSummary: ingredientsList)
     }
 }

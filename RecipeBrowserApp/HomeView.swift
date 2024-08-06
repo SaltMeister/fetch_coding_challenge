@@ -16,13 +16,14 @@ struct HomeView: View {
             ScrollView(.vertical) {
                 VStack {
                     Spacer()
-                    Text("What kind of dish are you looking for?")
-
+                    Text("What dish are you looking for?")
+                        .font(.title2)
+                        .padding()
+                    
                         LazyVGrid(columns: columns, spacing: 2) {
                             if dishTypeList.categories.isEmpty {
                                 ProgressView()
                             }
-
                             
                             // Display 2 items per grid row
                             ForEach(dishTypeList.categories, id: \.idCategory) { dishType in
@@ -45,10 +46,11 @@ struct HomeView: View {
                                         }
                                         .padding(5)
                                     }
+                                    .foregroundColor(.black)
                                 }
                             }
-                        }
-                    }
+                      }
+                }
             }
         }
         .onAppear {
@@ -56,7 +58,6 @@ struct HomeView: View {
                 dishTypeList = try await Api.getAllDishGenre()
             }
         }
-
     }
 }
 
